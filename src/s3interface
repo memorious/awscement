@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+
+__author__ = "memorious"
+
+import sys
+sys.path.append('helpers')
+from awshelpers import toLine
+from cement.core.foundation import CementApp
+from cement.core.controller import CementBaseController, expose
+
+#Let's start this module. First it prints whether it's loaded or executed
+if __name__ == "__main__":
+    print(toLine('Executing s3interface'))
+else:
+    print(toLine('Loading s3interface'))
+
+#Let's create our base controller
+class s3Controller(CementBaseController):
+    class Meta:
+        label = 'base'
+        description = "S3 Interface Application!"
+        arguments = [
+            (['--key_id'],
+             dict(action='store', help='AWS Access Key ID')),
+            (['--access_key'],
+             dict(action='store', help='AWS Secret Access Key')),
+            (['--bucket'],
+             dict(action='store', help='Target S3 Bucket')),
+            (['--dir'],
+             dict(action='store', help='Target S3 Directory')),
+            ]
+
+    #default action (nothing really happens here)
+    @expose(hide=True)
+    def default(self):
+        self.app.log.debug('Inside s3Controller.default()')
+
+    #list action (lists files in a bucket('s directory)
+    @expose(help="This Command List All Files In A Bucket")
+    def list(self):
+        self.app.log.debug("Inside s3Controller.list()")
+
+        #let's make sure we have our credentials and targets
+        if self.app.pargs.key_id is None:
+            print(toLine('Enter AWS Access Key ID'))
+            return
+        if self.app.pargs.access_key is None:
+            print(toLine('Enter AWS Secret Access Key'))
+            return
+        if self.app.pargs.bucket is None:
+            print(toLine('Enter target Bucket'))
+            return
+        if self.app.pargs.dir is None:
+            print(toLine('No target directory entered'))
+
+        #let's load up boto3
+        import boto3
+
+        #let's start a connection
+        s3 = boto3.resource(
+            's3',
+            aws_access_key_id = self.app.pargs.key_id,
+            aws_secret_access_key = self.app.pargs.access_key)   #lets connect using credentials and region stored in ~/.aws/credentials and ~/.aws/config
+
+        #let's find our bucket
+        bucket = None
+        if s3.Bucket(self.app.pargs.bucket) in s3.buckets.all():
+            bucket = s3.Bucket(self.app.pargs.bucket)
+        else:
+            print(toLine('Target Bucket Not Found'))
+            return
+
+        if self.app.pargs.dir is None:
+            for obj in bucket.objects.all():
+                filepath = obj.key.split('/')
+                filename = filepath[-1]
+                print(toLine(filename))
+        else:
+            for obj in bucket.objects.all():
+                if self.app.pargs.dir in obj.key in obj.key:
+                    filepath = obj.key.split('/')
+                    filename = filepath[-1]
+                    print(toLine(filename))
+
+class S3Interface(CementApp):
+    class Meta:
+        label = 's3interface'
+        base_controller = 'base'
+        handlers = [s3Controller]
+
+with S3Interface() as app:
+    app.run()
