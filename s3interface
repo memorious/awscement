@@ -97,17 +97,6 @@ class s3Controller(CementBaseController):
                     filename = filepath[-1]
                     print(toLine(filename))
 
-    def connect(self):
-        #let's load up boto3
-        import boto3
-        #let's start a connection
-        s3 = boto3.resource(
-            's3',
-            aws_access_key_id = self.app.pargs.key_id,
-            aws_secret_access_key = self.app.pargs.access_key)   #lets connect using credentials and region stored in ~/.aws/credentials and ~/.aws/config
-
-        return s3
-
 class S3Interface(CementApp):
     class Meta:
         label = 's3interface'
