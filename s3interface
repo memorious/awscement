@@ -27,7 +27,7 @@ __module_name__ = "s3interface"
 
 import sys
 sys.path.append('helpers')
-from awshelpers import toLine
+from awshelpers import *
 from cement.core.foundation import CementApp
 from cement.core.controller import CementBaseController, expose
 
@@ -76,17 +76,9 @@ class s3Controller(CementBaseController):
         if self.app.pargs.dir is None:
             print(toLine('No target directory entered'))
 
-        #let's load up boto3
-        import boto3
-
-        #let's start a connection
-        s3 = boto3.resource(
-            's3',
-            aws_access_key_id = self.app.pargs.key_id,
-            aws_secret_access_key = self.app.pargs.access_key)   #lets connect using credentials and region stored in ~/.aws/credentials and ~/.aws/config
+        s3 = s3Connect(self.app.pargs.key_id,self.app.pargs.access_key)
 
         #let's find our bucket
-        bucket = None
         if s3.Bucket(self.app.pargs.bucket) in s3.buckets.all():
             bucket = s3.Bucket(self.app.pargs.bucket)
         else:
@@ -104,6 +96,17 @@ class s3Controller(CementBaseController):
                     filepath = obj.key.split('/')
                     filename = filepath[-1]
                     print(toLine(filename))
+
+    def connect(self):
+        #let's load up boto3
+        import boto3
+        #let's start a connection
+        s3 = boto3.resource(
+            's3',
+            aws_access_key_id = self.app.pargs.key_id,
+            aws_secret_access_key = self.app.pargs.access_key)   #lets connect using credentials and region stored in ~/.aws/credentials and ~/.aws/config
+
+        return s3
 
 class S3Interface(CementApp):
     class Meta:
