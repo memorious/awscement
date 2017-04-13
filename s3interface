@@ -27,15 +27,9 @@ __module_name__ = "s3interface"
 
 import sys
 sys.path.append('helpers')
-from awshelpers import *
+from s3helpers import *
 from cement.core.foundation import CementApp
 from cement.core.controller import CementBaseController, expose
-
-#Let's start this module. First it prints whether it's loaded or executed
-if __name__ == "__main__":
-    print(toLine('Executing s3interface'))
-else:
-    print(toLine('Loading s3interface'))
 
 #Let's create our base controller
 class s3Controller(CementBaseController):
@@ -59,43 +53,25 @@ class s3Controller(CementBaseController):
         self.app.log.debug('Inside s3Controller.default()')
 
     #list action (lists files in a bucket('s directory)
-    @expose(help="This Command List All Files In A Bucket")
+    @expose(help="This Command Lists All Files In A Bucket('s directory)")
     def list(self):
         self.app.log.debug("Inside s3Controller.list()")
-
         #let's make sure we have our credentials and targets
-        if self.app.pargs.key_id is None:
-            print(toLine('Enter AWS Access Key ID'))
-            return
-        if self.app.pargs.access_key is None:
-            print(toLine('Enter AWS Secret Access Key'))
-            return
-        if self.app.pargs.bucket is None:
-            print(toLine('Enter target Bucket'))
-            return
-        if self.app.pargs.dir is None:
-            print(toLine('No target directory entered'))
+        s3 = s3Connect(self)
+        if s3:
+            fileList = s3List(self, s3)
+            if(fileList):
+                for obj in fileList:
+                    print(toLine(obj))
 
-        s3 = s3Connect(self.app.pargs.key_id,self.app.pargs.access_key)
-
-        #let's find our bucket
-        if s3.Bucket(self.app.pargs.bucket) in s3.buckets.all():
-            bucket = s3.Bucket(self.app.pargs.bucket)
-        else:
-            print(toLine('Target Bucket Not Found'))
-            return
-
-        if self.app.pargs.dir is None:
-            for obj in bucket.objects.all():
-                filepath = obj.key.split('/')
-                filename = filepath[-1]
-                print(toLine(filename))
-        else:
-            for obj in bucket.objects.all():
-                if self.app.pargs.dir in obj.key in obj.key:
-                    filepath = obj.key.split('/')
-                    filename = filepath[-1]
-                    print(toLine(filename))
+    #count action (count files in a bucket('s directory)
+    @expose(help="This Command Counts All Files In A Bucket('s directory)")
+    def count(self):
+        self.app.log.debug("Inside s3Controller.count()")
+        s3 = s3Connect(self)
+        if s3:
+            fileList = s3List(self, s3)
+            print(toLine(str(len(fileList)) + " File(s) Found"))
 
 class S3Interface(CementApp):
     class Meta:
