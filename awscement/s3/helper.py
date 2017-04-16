@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 __author__ = "memorious"
-__module_name__ = "aws.s3.helper"
+__module_name__ = "cement.s3.helper"
 
 #let's import main helper
 from awscement.helper import *

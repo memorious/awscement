@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 __author__ = "memorious"
-__module_name__ = "aws.s3.controller"
+__module_name__ = "cement.s3.controller"
 
 from cement.core.foundation import CementApp
 from cement.core.controller import CementBaseController, expose
@@ -31,7 +31,7 @@ from helper import *
 class s3Controller(CementBaseController):
     class Meta:
         label = 'base'
-        description = "S3 Interface Application!"
+        description = "s3 controller!"
         arguments = [
             (['--key_id'],
              dict(action='store', help='AWS Access Key ID')),
@@ -46,12 +46,12 @@ class s3Controller(CementBaseController):
     #default action (nothing really happens here)
     @expose(hide=True)
     def default(self):
-        self.app.log.debug('Inside s3Controller.default()')
+        self.app.log.debug('Inside cement.s3.controller.default()')
 
     #list action (lists files in a bucket('s directory)
     @expose(help="This Command Lists All Files In A Bucket('s directory)")
     def list(self):
-        self.app.log.debug("Inside s3Controller.list()")
+        self.app.log.debug("Inside cement.s3.controller.list()")
         #let's make sure we have our credentials and targets
         s3 = s3Connect(self)
         if s3:
@@ -63,7 +63,7 @@ class s3Controller(CementBaseController):
     #count action (count files in a bucket('s directory)
     @expose(help="This Command Counts All Files In A Bucket('s directory)")
     def count(self):
-        self.app.log.debug("Inside s3Controller.count()")
+        self.app.log.debug("cement.s3.controller.count()")
         s3 = s3Connect(self)
         if s3:
             fileList = s3List(self, s3)
