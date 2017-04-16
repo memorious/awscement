@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # MIT License
 #
 # Copyright (c) 2017 memorious
@@ -23,13 +21,11 @@
 # SOFTWARE.
 
 __author__ = "memorious"
-__module_name__ = "s3interface"
+__module_name__ = "aws.s3.controller"
 
-import sys
-sys.path.append('helpers')
-from s3helpers import *
 from cement.core.foundation import CementApp
 from cement.core.controller import CementBaseController, expose
+from helper import *
 
 #Let's create our base controller
 class s3Controller(CementBaseController):

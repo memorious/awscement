@@ -20,12 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import time
+__author__ = "memorious"
+__module_name__ = "aws.s3.helper"
 
-timeval = time.strftime("%c")
-
-def toLine(valueToPrint):
-    return(timeval + " : " + valueToPrint)
+#let's import main helper
+from awscement.helper import *
 
 def s3Connect(self):
     if self.app.pargs.key_id is None:
