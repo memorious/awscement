@@ -23,6 +23,9 @@
 __author__ = "memorious"
 __module_name__ = "cement.s3.helper"
 
+#let's load up boto3
+import boto3
+
 #let's import main helper
 from awscement.helper import *
 
@@ -33,8 +36,7 @@ def s3Connect(self):
     if self.app.pargs.access_key is None:
         print(toLine('Enter AWS Secret Access Key'))
         return
-    #let's load up boto3
-    import boto3
+
     #let's start a connection
     s3 = boto3.resource(
         's3',
@@ -71,3 +73,26 @@ def s3List(self, s3):
                 fileList.append(filename)
 
     return fileList
+
+def s3Count(self, s3):
+    fileList = s3List(self, s3)
+    return str(len(fileList))
+
+def s3Upload(self, s3):
+    if self.app.pargs.filename is None:
+        print(toLine('Enter a file to upload to bucket'))
+        return None
+    if self.app.pargs.bucket is None:
+        print(toLine('Enter target Bucket'))
+        return None
+    if self.app.pargs.dir is None:
+        print(toLine('No target directory entered'))
+        return None
+    #let's find our bucket
+    if s3.Bucket(self.app.pargs.bucket) in s3.buckets.all():
+        bucket = s3.Bucket(self.app.pargs.bucket)
+    else:
+        print(toLine('Target Bucket Not Found'))
+        return None
+        
+    s3.meta.client.upload_file(self.app.pargs.filename, self.app.pargs.bucket, self.app.pargs.filename)

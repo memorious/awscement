@@ -37,6 +37,8 @@ class s3Controller(CementBaseController):
              dict(action='store', help='AWS Access Key ID')),
             (['--access_key'],
              dict(action='store', help='AWS Secret Access Key')),
+            (['--filename'],
+             dict(action='store', help='Filename To Upload')),
             (['--bucket'],
              dict(action='store', help='Target S3 Bucket')),
             (['--dir'],
@@ -66,8 +68,15 @@ class s3Controller(CementBaseController):
         self.app.log.debug("cement.s3.controller.count()")
         s3 = s3Connect(self)
         if s3:
-            fileList = s3List(self, s3)
-            print(toLine(str(len(fileList)) + " File(s) Found"))
+            print(toLine(s3Count(self, s3) + " Object(s) Found"))
+
+    #count action (count files in a bucket('s directory)
+    @expose(help="This Command Uploads A File To A Bucket('s directory)")
+    def upload(self):
+        self.app.log.debug("cement.s3.controller.upload()")
+        s3 = s3Connect(self)
+        if s3:
+            s3Upload(self, s3)
 
 class S3Interface(CementApp):
     class Meta:

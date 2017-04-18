@@ -37,6 +37,7 @@ setup(
     description='Useful command line tools for CRUD of some AWS resources.',
     long_description=open('README.txt').read(),
     install_requires=[
-        "cement > 1.0.0"
+        "cement > 1.0.0",
+        "boto3 > 1.0.0",
     ],
 )
