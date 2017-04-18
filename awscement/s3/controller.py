@@ -78,6 +78,14 @@ class s3Controller(CementBaseController):
         if s3:
             s3Upload(self, s3)
 
+    #count action (count files in a bucket('s directory)
+    @expose(help="This Command Downloads A File To A Bucket('s directory)")
+    def download(self):
+        self.app.log.debug("cement.s3.controller.upload()")
+        s3 = s3Connect(self)
+        if s3:
+            s3Download(self, s3)
+
 class S3Interface(CementApp):
     class Meta:
         label = 's3interface'
