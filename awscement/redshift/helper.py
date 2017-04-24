@@ -21,23 +21,9 @@
 # SOFTWARE.
 
 __author__ = "memorious"
-__module_name__ = "setup"
+__module_name__ = "cement.resdshift.helper"
 
-from distutils.core import setup
+import os
 
-setup(
-    name='awscement',
-    version='1.0.0',
-    author='Memorious',
-    author_email='memorious@modulismo.com',
-    packages=['awscement','awscement.s3','awscement.redshift'],
-    scripts=['bin/s3interface'],
-    url='https://github.com/memorious/awscement',
-    license='LICENSE.txt',
-    description='Useful command line tools for CRUD of some AWS resources.',
-    long_description=open('README.txt').read(),
-    install_requires=[
-        "cement > 1.0.0",
-        "boto3 > 1.0.0",
-    ],
-)
+#let's import main helper
+from awscement.helper import *
